@@ -1,6 +1,9 @@
 const Router = require('express').Router();
-import {addUser} from "../services/services";
+import {signUp} from "../services/services";
 
-Router.route("/addUser").post(
-    addUser
-)
+
+export const routerHandler = () => {
+    Router.post('/signup', signUp);
+
+    return Router
+}
