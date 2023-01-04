@@ -4,6 +4,11 @@ import {User} from "../controllers/userInterface";
 
 export async function signUp(req: any, res: any) {
     try {
+        const client = new MongoClient(process.env.URL_DB);
+        const conn = await client.connect();
+        const db = await client.db("dropdown");
+        const result = await db.collection('users').find({}).toArray();
+        console.log(result)
         const { email, firstName,  login, password } = req.body;
         if(!email || !password || !firstName || !login) {
             res.status(400).send({msg: "Not all required data are given"});
@@ -21,6 +26,11 @@ export async function signUp(req: any, res: any) {
             res.status(400).send({msg: "Fields should have at least 3 symbols"});
             return
         }
+        if(result.some((element:any) => element.email === email)) {
+            res.status(400).send({msg: "This email is already used"});
+            return
+        }
+
         const hashedPassword = await bcrypt.hash(password, 8);
         const userData:User = {
             email,
@@ -29,10 +39,8 @@ export async function signUp(req: any, res: any) {
             login,
             role: "user",
         };
-        const client = new MongoClient(process.env.URL_DB);
-        const conn = await client.connect();
-        const db = await client.db("dropdown");
-        await db.collection("users").insertOne({firstName: userData.firstName, login: userData.login, pass: userData.password, role: userData.role});
+
+        await db.collection("users").insertOne({firstName: userData.firstName,email:userData.email, login: userData.login, pass: userData.password, role: userData.role});
         res.send("User added successfully")
     } catch (err) {
         res.send(err)

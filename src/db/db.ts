@@ -1,18 +1,9 @@
-const {MongoClient} = require('mongodb');
+const mongo = require('mongoose');
 
-export async function run() {
-    const client = new MongoClient(process.env.URL_DB);
-    try{
-        const conn = await client.connect();
-        if(conn) console.log(" Połączono z db");
-        await client.db("dropDown");
 
-    } catch (err){
-        console.log(err);
-    } finally {
-        const close = await client.close();
-        if(close) console.log("Connection closed");
-    }
+    mongo.set("strictQuery", false);
+    const connection = mongo.connect(process.env.URL_DB, { useNewUrlParser: true, useUnifiedTopology: true });
+    if(connection) console.log("Database connected")
 
-}
+
 
