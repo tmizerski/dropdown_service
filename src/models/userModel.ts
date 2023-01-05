@@ -37,7 +37,7 @@ userModel.statics.signup = async function (email:string, password:string, firstN
 
     const existsEmail = await this.findOne({email});
     if(existsEmail) {
-        throw Error(existsEmail ? 'Email already in use' : 'Login already in use');
+        throw Error('Email already in use');
     }
     const salt = await bcrypt.genSalt(10);
     const hash = await bcrypt.hash(password, salt);
