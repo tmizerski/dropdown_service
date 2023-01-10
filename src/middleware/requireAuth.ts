@@ -1,4 +1,3 @@
-const jwebtoken = require('jsonwebtoken');
 const UserModel = require('../models/userModel');
 
 const requireAuth = async (req:any, res:any, next:any) => {
