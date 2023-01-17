@@ -1,3 +1,5 @@
+import {Error} from "mongoose";
+
 require('../db/db');
 const User = require('../models/userModel');
 const jwt = require('jsonwebtoken');
@@ -30,4 +32,27 @@ const loginUser = async (req:any, res:any) => {
     }
 }
 
-module.exports = {signupUser, loginUser}
+const getUser = async (req: any, res:any) => {
+    try{
+        const result = await User.find({});
+        res.status(200).send(result)
+    } catch(err:any) {
+        res.status(400).send(err.message)
+    }
+}
+
+const mailer = async(req:any, res:any) => {
+    try {
+        if(req.body.complaint.value === 99) {
+            res.status(400).send(new Error('Błąd'))
+        } else {
+            console.log("wysyłam")
+            res.send({text: "Status: " + req.body.status})
+        }
+        // res.send({text: "wyłano mail do: "+req.body.complaint.value})
+    } catch (err:any) {
+        res.status(400).send(err.message)
+    }
+}
+
+module.exports = {signupUser, loginUser,getUser, mailer}
